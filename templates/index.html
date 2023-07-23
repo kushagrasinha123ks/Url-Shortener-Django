@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL Shortener</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: "Lato", sans-serif;
+      font-size: 16px;
+      color: #333;
+      background-image: linear-gradient(to top, #30cfd0 0%, #330867 100%);
+    }
+
+    .container {
+      max-width: 500px;
+      width: 100%;
+      padding: 2rem;
+      border-radius: 5px;
+      background-color: #fff;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #4328B4;
+      margin: 0;
+    }
+
+    .form-group {
+      display: flex;
+    }
+
+    .form-input {
+      flex: 1;
+      padding: 1rem;
+      font-family: inherit;
+      font-size: 1rem;
+      border: 2px solid #ccc;
+      border-right: none;
+      border-top-left-radius: 5px;
+      border-bottom-left-radius: 5px;
+      background-color: #f8f8f8;
+    }
+
+    .form-input:focus {
+      outline: none;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-button {
+      padding: 1rem;
+      border: none;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
+      background-color: #330867;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .form-button:hover {
+      background-color: #5a1fd5;
+    }
+
+    .result-section {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .result-text {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #333;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>URL Shortener</h1>
+    </div>
+    <form id="post-form">
+      {% csrf_token %}
+      <div class="form-group">
+        <input type="text" name="link" id="link" class="form-input" placeholder="Enter URL">
+        <button type="submit" id="shorten" class="form-button">Shorten</button>
+      </div>
+    </form>
+
+    <div class="result-section" id="section">
+      <p class="result-text"></p>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script type="text/javascript">
+    $(document).on('submit', '#post-form', function (e) {
+      e.preventDefault(); // stop reloading
+
+      const inputValue = $('#link').val().trim();
+      // Check if the input value is empty
+      if (inputValue === '') {
+        $('.result-text').text("Invalid URL: The URL cannot be empty.");
+        return; // Do not proceed further
+      }
+      
+      $.ajax({
+        type: 'POST',
+        url: '/create',
+        data: {
+          link: $('#link').val(),
+          csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+        },
+        success: function (data) {
+          $('.result-text').text("localhost:8000/" + data);
+        }
+      });
+    });
+  </script> 
+  
+  
+  
+</body>
+
+</html>
